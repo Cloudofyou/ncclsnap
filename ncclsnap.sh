@@ -4,6 +4,19 @@ echo "|  ncclsnap v0.1        |"
 echo "+-----------------------+"
 echo ""
 
+num_args=$#
+
+verbose_mode=0
+if [ "$num_args" -gt 0 ]; then
+	if [ "$1" == "-v" ]; then
+		verbose_mode=1
+	else
+		echo "Usage: ncclsnap.sh [-v]"
+		echo "-v	Verbose"
+		echo ""
+	fi
+fi
+
 ## Detect number of NUMA nodes
 lscpu | grep -i numa | awk '/NUMA node\(s\)/ {print "Number of NUMA node(s): "$NF}'
 ## Will also show "NUMA node0 CPU(s):  ...  0-47"
@@ -13,6 +26,16 @@ lscpu | grep -i numa | awk '/NUMA node\(s\)/ {print "Number of NUMA node(s): "$N
 ## Detect number of NVIDIA devices (these should only be GPUs within AWS -- right?)
 echo -n "Number of detected GPU(s): "
 lspci | grep -i nvidia | wc -l
+if [ "$verbose_mode" == 1 ]; then
+	count=0
+	num_gpus=$(lspci | grep -i nvidia | wc -l)
+	if [ "$num_gpus" -gt 0 ]; then
+		lspci | grep -i nvidia | while read -r line; do
+		device=$(echo "$line") # | awk -F': ' '{print $6}')
+		    echo "$((++count))) $device"
+		done
+	fi
+fi
 
 ## Check if NVIDIA driver is installed
 echo -n "NVIDIA driver detected: "
