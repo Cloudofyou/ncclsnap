@@ -40,8 +40,13 @@ else
 fi
 
 ## Check if NVIDIA driver is installed
-echo -n "-> NVIDIA driver detected: "
-dpkg -l | grep -i nvidia-driver- | awk '/nvidia-driver-/ {print $3; found=1; exit} END {if (!found) print "None"}'
+driver_inst=$(dpkg -l | grep -i nvidia-driver - | wc -l)
+if [ "$driver_inst" -gt 0 ]; then
+	echo -n "-> NVIDIA driver detected: "
+	dpkg -l | grep -i nvidia-driver- | awk '/nvidia-driver-/ {print $3; found=1; exit} END {if (!found) print "None."}'
+else
+	echo "* -> NVIDIA driver detected: None."
+fi
 
 ## Check for CUDA and version
 installed_package=$(sudo dpkg --get-selections | grep -w "install" | egrep -i 'cuda-(12|11|10|9)' | awk '{print $1}')
@@ -87,8 +92,13 @@ fi
 ## Find version installed and display it if it exists [todo]
 
 ## Check if NCCL is installed
-echo -n "-> NCCL library detected: "
-dpkg -l | grep -i libnccl2 | awk '/libnccl2/ {print $3; found=1; exit} END {if (!found) print "None."}'
+nccl_lib_check=$(dpkg -l | grep -i libnccl2 | wc -l)
+if [ "$nccl_lib_check" -gt 0 ]; then
+	echo -n "-> NCCL library detected: "
+	dpkg -l | grep -i libnccl2 | awk '/libnccl2/ {print $3; found=1; exit} END {if (!found) print "None."}'
+else
+	echo "* -> NCCL library detected: None."
+fi
 
 ## Check if NCCL-tests is installed
 check_nccl_dir=$HOME/nccl-tests
