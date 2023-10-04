@@ -114,15 +114,10 @@ else
 fi
 
 ## Detect and show fabric manager & version
-
 ## Detect/show CuDNN
-
 ## Detect/show GDRCopy
-
 ## Slurm
-
 ## Docker
-
 ## Support utils installed? cmake, unzip, g++, libhwloc-dev, etc.
 
 
